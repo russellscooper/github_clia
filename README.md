@@ -1,4 +1,4 @@
-# Skeleton_CLI
+
 <h1> Skeleton Application - CLI </h1>
 <h2>Description</h2>
 <p>This Dart CLI application serves as a template for creating command-line tools using the Dart programming language. It provides a basic structure to kickstart your project and includes essential files and directories.</p>
