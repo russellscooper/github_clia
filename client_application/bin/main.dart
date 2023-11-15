@@ -1,23 +1,30 @@
+//Needed to encode and decode data url:https://tinyurl.com/yc568h3f
 import 'dart:convert';
-
+//Build and manage terminal applications https://tinyurl.com/4eann3vm
 import 'package:dart_console/dart_console.dart';
+//Make http requests
 import 'package:http/http.dart' as http;
 
+//Sample data set to a constant for testing.
 const githubUrl = 'https://github.com/russellscooper';
 const githubUser = 'russellscooper';
 
+//Return boolean object if github url is online or not.
 Future<bool> checkOnlineStatus() async {
   try {
+    //attempt to make a get request.
     final response = await http.get(Uri.parse(githubUrl));
     return response.statusCode == 200;
   } catch (e) {
-    // Handle the error (e.g., network error)
+    // Handle the exception
     return false;
   }
 }
 
+//Make a request to github api to get some user data.
 Future<Map<String, dynamic>> fetchUser(String username) async {
   final response =
+      //Uri info https://tinyurl.com/6ykctbve
       await http.get(Uri.parse('https://api.github.com/users/$username'));
   if (response.statusCode == 200) {
     return jsonDecode(response.body);
@@ -26,6 +33,7 @@ Future<Map<String, dynamic>> fetchUser(String username) async {
   }
 }
 
+//Function to write user info to the console.
 void writeUserInfo(Map<String, dynamic> userInfo) {
   final console = Console();
   console.writeLine('\nUser Information:', TextAlignment.left);
