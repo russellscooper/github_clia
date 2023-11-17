@@ -54,8 +54,12 @@ void printMainMenu() {
   console.resetCursorPosition();
   console.writeLine('''
 ##################################################
-#      GITHUB CLIENT APPLICATION MAIN MENU      #
+#      GITHUB CLIENT APPLICATION MAIN MENU       #
 ##################################################
+1. User Search 
+2. Connection Information
+
+
 ''', TextAlignment.left);
 }
 
@@ -70,11 +74,30 @@ void printOnlineStatus(bool isOnline) {
 void printFooter() {
   final console = Console();
   console.writeLine('''
+--------------------------------------------------
   Thank You for Using Our Tech!
 
       Copyright © S Cooper 2023
 ''', TextAlignment.left);
   console.resetColorAttributes();
+}
+
+//Search for a user
+Future<void> processUserSearch() async {
+  final console = Console();
+  console.writeLine('\nEnter GitHub username:', TextAlignment.left);
+  final input = console.readLine();
+
+  try {
+    final userInfo = await fetchUser(input!);
+    writeUserInfo(userInfo);
+  } catch (e) {
+    print('Failed to fetch user information. Error: $e');
+  }
+}
+
+void processConnectionInfo() {
+  print('Coming Soon');
 }
 
 void main() async {
@@ -84,17 +107,24 @@ void main() async {
   final isOnline = await checkOnlineStatus();
   printOnlineStatus(isOnline);
 
-  // Prompt the user for a GitHub username
-  final console = Console();
-  console.writeLine('\nEnter GitHub username:', TextAlignment.left);
-  final input = console.readLine();
+  final mainInput = Console().readLine();
+  //null safety
+  final intValue = mainInput != null ? int.tryParse(mainInput) ?? 0 : 0;
 
-  // Fetch user information
-  try {
-    final userInfo = await fetchUser(input!);
-    writeUserInfo(userInfo);
-  } catch (e) {
-    print('Failed to fetch user information. Error: $e');
+  /*When reading input from the console and parsing it into an integer,  
+  use the parsed integer value in the switch statement or any logic 
+  that requires an integer comparison. By using the intValue variable 
+  (parsed value), it can be ensured that the switch is working with the 
+  orrect data type in your control flow. */
+  switch (intValue) {
+    case 1:
+      await processUserSearch();
+      break;
+    case 2:
+      processConnectionInfo();
+      break;
+    default:
+      print('Invalid choice');
   }
 
   printFooter();
