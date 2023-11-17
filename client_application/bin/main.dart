@@ -5,9 +5,9 @@ import 'package:dart_console/dart_console.dart';
 //Make http requests
 import 'package:http/http.dart' as http;
 
-//Sample data set to a constant for testing.
-const githubUrl = 'https://github.com/russellscooper';
-const githubUser = 'russellscooper';
+//Establish API connection
+const githubUrl = 'https://github.com/';
+const githubApiUrl = 'https://api.github.com/users/';
 
 //Return boolean object if github url is online or not.
 Future<bool> checkOnlineStatus() async {
@@ -15,17 +15,16 @@ Future<bool> checkOnlineStatus() async {
     //attempt to make a get request.
     final response = await http.get(Uri.parse(githubUrl));
     return response.statusCode == 200;
-  } catch (e) {
     // Handle the exception
+  } catch (e) {
     return false;
   }
 }
 
 //Make a request to github api to get some user data.
 Future<Map<String, dynamic>> fetchUser(String username) async {
-  final response =
-      //Uri info https://tinyurl.com/6ykctbve
-      await http.get(Uri.parse('https://api.github.com/users/$username'));
+  final response = await http.get(Uri.parse('$githubApiUrl$username'));
+  //Uri info https://tinyurl.com/6ykctbve
   if (response.statusCode == 200) {
     return jsonDecode(response.body);
   } else {
@@ -46,6 +45,7 @@ void writeUserInfo(Map<String, dynamic> userInfo) {
   console.writeLine('Following: ${userInfo['following']}', TextAlignment.left);
 }
 
+//Print out the main menu
 void printMainMenu() {
   final console = Console();
   console.setBackgroundColor(ConsoleColor.black);
@@ -59,12 +59,14 @@ void printMainMenu() {
 ''', TextAlignment.left);
 }
 
+//show online status
 void printOnlineStatus(bool isOnline) {
   final console = Console();
   console.writeLine(
       isOnline ? 'You are online.' : 'You are offline.', TextAlignment.center);
 }
 
+//show footer
 void printFooter() {
   final console = Console();
   console.writeLine('''
@@ -82,9 +84,14 @@ void main() async {
   final isOnline = await checkOnlineStatus();
   printOnlineStatus(isOnline);
 
+  // Prompt the user for a GitHub username
+  final console = Console();
+  console.writeLine('\nEnter GitHub username:', TextAlignment.left);
+  final input = console.readLine();
+
   // Fetch user information
   try {
-    final userInfo = await fetchUser(githubUser);
+    final userInfo = await fetchUser(input!);
     writeUserInfo(userInfo);
   } catch (e) {
     print('Failed to fetch user information. Error: $e');
